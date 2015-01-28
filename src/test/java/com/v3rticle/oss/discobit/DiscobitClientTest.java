@@ -2,8 +2,10 @@ package com.v3rticle.oss.discobit;
 
 import java.io.File;
 import java.net.URL;
+import java.util.Properties;
 import java.util.UUID;
 
+import org.hamcrest.CoreMatchers;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -27,9 +29,9 @@ public class DiscobitClientTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		System.setProperty(DiscobitOptions.DISCOBIT_SERVER_URL, "http://127.0.0.1:9999");
-		System.setProperty(DiscobitOptions.DISCOBIT_SERVER_USERNAME, "adminadmin");
-		System.setProperty(DiscobitOptions.DISCOBIT_SERVER_PASSWORD, "adminadmin");
+		System.setProperty(DiscobitOptions.DISCOBIT_SERVER_URL, "http://127.0.0.1:8004");
+		System.setProperty(DiscobitOptions.DISCOBIT_SERVER_USERNAME, "cfgadmin");
+		System.setProperty(DiscobitOptions.DISCOBIT_SERVER_PASSWORD, "cfgadmin");
 		System.clearProperty(DiscobitOptions.DISCOBIT_CONFIG_UUID);
 		discobit = DiscobitClientFactory.getClient();
 		
@@ -42,7 +44,19 @@ public class DiscobitClientTest {
 	public void tearDown() throws Exception {
 	}
 
+
+
 	@Test
+	public void readConfiguration() throws DiscobitOperationException {
+
+		Properties config = discobit.getConfig(UUID.fromString("b9622d1c-ed4b-4415-a15b-e2489a1bc984"));
+
+		Assert.assertNotNull(config);
+		Assert.assertTrue(config.size() > 0);
+	}
+
+
+//	@Test
 	public void createAndReadConfiguration() {
 		
 		try {

@@ -1,16 +1,14 @@
 package com.v3rticle.oss.discobit.client.agent;
 
-import java.io.IOException;
+import com.v3rticle.oss.discobit.client.DiscobitClientFactory;
+import com.v3rticle.oss.discobit.client.DiscobitOperationException;
+import com.v3rticle.oss.discobit.client.bootstrap.DiscobitSettings;
+
 import java.lang.instrument.Instrumentation;
 import java.util.Enumeration;
 import java.util.Properties;
 import java.util.UUID;
 import java.util.logging.Logger;
-
-import com.mashape.unirest.http.Unirest;
-import com.v3rticle.oss.discobit.client.DiscobitClientFactory;
-import com.v3rticle.oss.discobit.client.DiscobitOperationException;
-import com.v3rticle.oss.discobit.client.bootstrap.DiscobitSettings;
 
 public class DiscobitAgent {
 private static Logger log = Logger.getLogger(DiscobitAgent.class.getName());
@@ -45,11 +43,11 @@ private static Logger log = Logger.getLogger(DiscobitAgent.class.getName());
 		} catch (DiscobitOperationException e) {
 			log.warning(e.getMessage());
 		} finally {
-			try {
-				Unirest.shutdown();
-			} catch (IOException e) {
-				log.warning(e.getMessage());
-			}
+//			try {
+//				Unirest.shutdown();
+//			} catch (IOException e) {
+//				log.warning(e.getMessage());
+//			}
 		}
 	}
 }

@@ -1,5 +1,10 @@
 package com.v3rticle.oss.discobit.client;
 
+import com.v3rticle.oss.discobit.client.bootstrap.DiscobitOptions;
+import com.v3rticle.oss.discobit.client.dto.ApplicationDTO;
+import com.v3rticle.oss.discobit.client.dto.ConfigPropertyDTO;
+import com.v3rticle.oss.discobit.client.dto.ConfigurationDTO;
+
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -7,12 +12,6 @@ import java.util.Properties;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import com.v3rticle.oss.discobit.client.bootstrap.DiscobitOptions;
-import com.v3rticle.oss.discobit.client.bootstrap.DiscobitSettings;
-import com.v3rticle.oss.discobit.client.dto.ApplicationDTO;
-import com.v3rticle.oss.discobit.client.dto.ConfigPropertyDTO;
-import com.v3rticle.oss.discobit.client.dto.ConfigurationDTO;
 
 /**
  * The discoBit client wraps all calls to the repository REST-API. For detailed documentation see <a href="http://discobit.com/api">http://discobit.com/api</a>
