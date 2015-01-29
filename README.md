@@ -1,5 +1,9 @@
-discobit-client-java
+discobit-slim-client-java
 ====================
+
+This fork removes all external dependencies so the resulting jar is just approximately 45kB.
+Also added maven pom.
+
 
 discoBit - Remote Application Configuration Management
 ------------------------------------------------------------------
