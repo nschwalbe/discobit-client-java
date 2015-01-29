@@ -1,29 +1,25 @@
 package com.v3rticle.oss.discobit;
 
-import java.io.File;
-import java.net.URL;
-import java.util.Properties;
-import java.util.UUID;
-
-import org.hamcrest.CoreMatchers;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-
 import com.v3rticle.oss.discobit.client.DiscobitClient;
 import com.v3rticle.oss.discobit.client.DiscobitClientFactory;
 import com.v3rticle.oss.discobit.client.DiscobitOperationException;
 import com.v3rticle.oss.discobit.client.bootstrap.DiscobitOptions;
+import org.junit.*;
 
-/**
- * @author jens@v3rticle.com
- *
- */
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Properties;
+import java.util.UUID;
+
 public class DiscobitClientTest {
 
 	static DiscobitClient discobit;
-	
+
+    private static final UUID CONFIG_UUID = UUID.fromString("b9622d1c-ed4b-4415-a15b-e2489a1bc984");
+
 	/**
 	 * @throws java.lang.Exception
 	 */
@@ -42,49 +38,61 @@ public class DiscobitClientTest {
 	 */
 	@After
 	public void tearDown() throws Exception {
-	}
 
+        // TODO remove test space
+    }
+
+    @Test
+    @Ignore("Create Configuration fails!")
+    public void createAppSpaceAndConfig() throws DiscobitOperationException {
+
+        int spaceID = discobit.createApplicationSpace("junit", "junit@v3rticle.com", "junit-app-" + System.currentTimeMillis(), "http://v3rticle.com");
+        Assert.assertTrue(spaceID >= 0);
+
+        UUID cUUID = discobit.createConfiguration(spaceID, "junit-cfg-" + System.currentTimeMillis(), "test configuration");
+        Assert.assertNotNull(cUUID);
+    }
 
 
 	@Test
 	public void readConfiguration() throws DiscobitOperationException {
 
-		Properties config = discobit.getConfig(UUID.fromString("b9622d1c-ed4b-4415-a15b-e2489a1bc984"));
+        Properties config = discobit.getConfig(CONFIG_UUID);
 
 		Assert.assertNotNull(config);
 		Assert.assertTrue(config.size() > 0);
 	}
 
+    @Test
+    public void checkConfigExists() throws DiscobitOperationException {
 
-//	@Test
-	public void createAndReadConfiguration() {
-		
-		try {
-			
-			int spaceID = discobit.createApplicationSpace("junit", "junit@v3rticle.com", "junit-app-"+ System.currentTimeMillis(), "http://v3rticle.com");
-			Assert.assertTrue(spaceID >= 0);
-					
-			UUID cUUID = discobit.createConfiguration(spaceID, "junit-cfg-" + System.currentTimeMillis(), "test configuration");
-			Assert.assertNotNull(cUUID);
-			
-			boolean success = discobit.createConfigProperty(cUUID, "test1", "value1");
-			Assert.assertTrue(success);
-			
-			String value = discobit.getConfigProperty(cUUID,"test1", false);
-			Assert.assertEquals("value1", value);
-			
-			URL url = this.getClass().getClassLoader().getResource("test.properties");
-			File f = new File(url.getFile());
-			Assert.assertTrue(f.exists());
+        boolean exists = discobit.checkConfigExists(CONFIG_UUID.toString());
+        Assert.assertTrue(exists);
+    }
 
-			boolean successPush = discobit.pushConfiguration(cUUID.toString(), f);
-			Assert.assertTrue(successPush);
-			
-			
-		} catch (DiscobitOperationException e) {
-			Assert.fail(e.getMessage());
-		}
-		
-	}
+    @Test
+    @Ignore("Get Config Property fails")
+    public void getConfigProperty() throws DiscobitOperationException {
 
+        String property = discobit.getConfigProperty(CONFIG_UUID, "app.stage", false);
+
+        Assert.assertNotNull(property);
+        Assert.assertEquals("development", property);
+    }
+
+    @Test
+    public void pushConfig() throws IOException {
+
+        Path tmpFile = Files.createTempFile("Discobit", "test.conf");
+        try (BufferedWriter writer = Files.newBufferedWriter(tmpFile, Charset.forName("UTF-8"))) {
+
+            writer.write("my.prop=abc");
+            writer.newLine();
+            writer.write("my.other.prop=xyz");
+        }
+
+
+        boolean successPush = discobit.pushConfiguration(CONFIG_UUID.toString(), tmpFile.toFile());
+        Assert.assertTrue(successPush);
+    }
 }
